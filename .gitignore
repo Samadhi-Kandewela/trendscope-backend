@@ -1,0 +1,28 @@
+# Ignore Python virtual env
+venv/
+
+# Ignore environment variables
+backend/.env
+
+# Ignore large CSV datasets
+backend/filtered_2020_english.csv
+backend/filtered_old_dataset_english.csv
+
+# Ignore pycache
+__pycache__/
+backend/__pycache__/
+backend/app/__pycache__/
+backend/app/*/__pycache__/
+backend/scripts/__pycache__/
+
+# Ignore compiled Python files
+*.pyc
+
+# Ignore model pickle files (optional)
+backend/app/ml/models/*.pkl
+
+# Ignore VSCode workspace files
+.vscode/
+
+# Ignore migrations cache (OPTIONAL)
+backend/migrations/*.pyc
