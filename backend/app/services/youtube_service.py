@@ -3,12 +3,12 @@ import requests
 from flask import current_app
 # Added json for safe dummy data handling
 import json 
-# Added Any for type hinting in the new function
-from typing import Dict, List, Any 
-
 
 YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3"
 
+# --- RAPIDAPI CONFIGURATION ---
+RAPIDAPI_HOST = "keyword-research-for-youtube.p.rapidapi.com"
+RAPIDAPI_ENDPOINT = f"https://{RAPIDAPI_HOST}/yttags.php"
 
 GENRE_TO_CATEGORY_ID = {
     "Gaming": 20,
@@ -71,80 +71,150 @@ def get_trending_videos(region: str, genre: str, limit: int = 8) -> List[Dict]:
 
     return videos
 
+def _format_volume(volume: int | float) -> str:
+    """Helper to convert raw volume numbers to K/M format."""
+    if volume >= 1_000_000:
+        return f"{round(volume / 1_000_000, 1)}M"
+    if volume >= 1_000:
+        return f"{round(volume / 1000)}K"
+    return str(int(volume))
+
+def _handle_api_failure(seed_keyword: str, region: str, error: str) -> Dict[str, Any]:
+    """Provides a safe, minimal fallback structure when the API call fails."""
+    current_app.logger.error(f"API call failed for '{seed_keyword}': {error}")
+    return {
+        "seed_keyword": seed_keyword,
+        "region": region,
+        "high_volume_keywords": [
+            {"keyword": f"{seed_keyword} - Data Unavailable", "volume": "N/A", "competition": "N/A", "trend_velocity": "N/A"}
+        ],
+        "trending_tags": [f"#{seed_keyword.replace(' ', '-').lower()}", "#DATA_ERROR"],
+        "audience_questions": [f"Data service failed: {error[:50]}", "Try searching a broader keyword."],
+        "competitive_videos": [], 
+    }
+
+def _fetch_competitive_videos(youtube_key: str, seed_keyword: str, region: str) -> List[Dict]:
+    """
+    Fetches the actual top-ranking videos using the YouTube Data API Search endpoint.
+    This replaces the simulation.
+    """
+    if not youtube_key:
+        current_app.logger.warning("YouTube API key missing for competitive video search.")
+        return []
+
+    params = {
+        "key": youtube_key,
+        "q": seed_keyword,
+        "part": "snippet",
+        "type": "video",
+        "regionCode": region,
+        "maxResults": 3, # We only need the Top 3
+        "order": "viewCount" # Order by view count to get high-ranking content
+    }
+
+    try:
+        resp = requests.get(f"{YOUTUBE_API_URL}/search", params=params, timeout=5)
+        resp.raise_for_status()
+        data = resp.json()
+        
+        videos = []
+        for item in data.get("items", []):
+            snippet = item.get("snippet", {})
+            vid_id = item["id"].get("videoId")
+
+            videos.append(
+                {
+                    "title": snippet.get("title"),
+                    "channel": snippet.get("channelTitle"),
+                    "videoId": vid_id,
+                    # We can't get views or tags without a second 'videos' API call, so we use N/A placeholders for views/tags
+                    "views": "N/A (2nd Call Needed)", 
+                    "summary": snippet.get("description", "No description available.").split('.')[0],
+                    "tags": ["N/A", "N/A"],
+                    "insight": "Ranks based on relevance/views.",
+                }
+            )
+        return videos
+        
+    except requests.exceptions.RequestException as e:
+        current_app.logger.error(f"YouTube Search API failed: {e}")
+        return [] # Return empty list on failure
 
 def get_keyword_analysis(seed_keyword: str, region: str) -> Dict[str, Any]:
     """
-    Simulates fetching comprehensive keyword, tag, question, and competitive 
-    analysis data for the Explorer page (Real-Time Tactical SEO).
+    Fetches real keyword analysis data by calling both RapidAPI (metrics) 
+    and YouTube Data API (competitive videos).
     """
-    # NOTE: This function simulates calling several external tools (YouTube Search API, 
-    # SEO data providers) to match the required UI structure, as the YouTube 
-    # Data API alone cannot provide all of this data (e.g., search volume, competition).
-    
+    rapidapi_key = current_app.config.get("RAPIDAPI_KEY")
+    youtube_key = current_app.config.get("YOUTUBE_API_KEY")
+
+    if not rapidapi_key:
+        return _handle_api_failure(seed_keyword, region, "RAPIDAPI_KEY not configured.")
+
     region_display = region if region != "Global" else "Global"
     
-    # --- 1. High-Volume Keywords (Simulation) ---
-    high_volume_keywords = [
-        {"keyword": "midjourney vs dall-e 2026", "volume": "29K", "competition": "Low", "trend_velocity": "Very High"},
-        {"keyword": "best AI tools for creators", "volume": "45K", "competition": "Low", "trend_velocity": "High"},
-        {"keyword": "free video editing AI", "volume": "38K", "competition": "Medium", "trend_velocity": "High"},
-        {"keyword": "youtube automation with AI", "volume": "18K", "competition": "Medium", "trend_velocity": "High"},
-        {"keyword": "AI scriptwriting tools", "volume": "22K", "competition": "Low", "trend_velocity": "Medium"},
-    ]
-
-    # --- 2. Trending Tags (Simulation) ---
-    trending_tags = [
-        "#viral videos", "#AI productivity", "#creator economy", 
-        "#video marketing", "#social media trends", "#future of content"
-    ]
+    # --- 1. RAPIDAPI CALL (Metrics) ---
+    headers = {
+        "x-rapidapi-host": RAPIDAPI_HOST,
+        "x-rapidapi-key": rapidapi_key,
+    }
+    params = {
+        "keyword": seed_keyword,
+        "country": region,
+    }
     
-    # --- 3. Audience Questions (Simulation) ---
-    audience_questions = [
-        "How will AI change video editing in 2026?",
-        "What is the best free AI tool for scriptwriting?",
-        "Is Midjourney still worth it in 2026?",
-        "Top 5 new AI tools released this quarter",
-        "How to use AI for YouTube SEO?",
-    ]
-    
-    # --- 4. Competitive Analysis (Simulation) ---
-    competitive_videos = [
-        {
-            "title": "I Tested 10 New AI Tools & Found 3 Must-Haves",
-            "channel": "Tech Channel Pro",
-            "views": "5.1M",
-            "summary": "Review of free & paid tools focusing on workflow integration and time-saving features.",
-            "tags": ["ai tools", "productivity apps", "must have 2026", "🔥 viral"],
-            "insight": "Published 5 days ago. High Velocity — ideal for 'early adopter' audience.",
-            "videoId": "abc123xyz" # Placeholder
-        },
-        {
-            "title": "The End of Copywriting? Using GPT-5 for Scripts",
-            "channel": "Frontend Masters",
-            "views": "890K",
-            "summary": "Breakdown of how LLMs replace junior copywriters for scriptwriting.",
-            "tags": ["copywriting", "ai", "gpt-5", "script writing", "llm"],
-            "insight": "Published 3 weeks ago. Strong long-tail performance with stable engagement.",
-            "videoId": "def456uvw"
-        },
-        {
-            "title": "AI Content Creation: Complete Beginner’s Guide 2026",
-            "channel": "Content Academy",
-            "views": "2.1M",
-            "summary": "Step-by-step tutorial on automating video ideas and production using new AI systems.",
-            "tags": ["AI content", "tutorial", "beginner guide", "2026 tools"],
-            "insight": "Published 2 months ago. High authority, ranks consistently for broad keywords.",
-            "videoId": "ghi789rst"
-        },
-    ]
+    try:
+        response = requests.get(RAPIDAPI_ENDPOINT, headers=headers, params=params, timeout=8)
+        response.raise_for_status()
+        api_data = response.json()
+    except requests.exceptions.RequestException as e:
+        # Fallback if metrics fail
+        return _handle_api_failure(seed_keyword, region, str(e))
 
-    # The region input is intentionally ignored in the simulation logic above 
-    # but would be used to filter real search data.
+
+    # --- 2. Process Metrics Data ---
+    keywords_to_process = []
+    if api_data.get('exact_keyword'):
+        keywords_to_process.extend(api_data['exact_keyword'])
+    if api_data.get('related_keywords'):
+        keywords_to_process.extend(api_data['related_keywords'])
+
+    high_volume_keywords = []
+    trending_tags = []
+    
+    for item in keywords_to_process:
+        keyword = item.get("keyword", "N/A")
+        volume = item.get("monthlysearch", 0)
+        competition_score = item.get("competition_score", 0)
+        difficulty = item.get("difficulty", "N/A")
+
+        high_volume_keywords.append({
+            "keyword": keyword,
+            "volume": _format_volume(volume),
+            "competition": difficulty,
+            "trend_velocity": "High" if competition_score < 40 else "Medium"
+        })
+        
+        tag_name = keyword.replace(' ', '').replace('-', '').lower()
+        if tag_name and len(trending_tags) < 10:
+            trending_tags.append(f"#{tag_name}")
+
+
+    # --- 3. YOUTUBE API CALL (Competitive Videos - Replaces Simulation) ---
+    competitive_videos = _fetch_competitive_videos(youtube_key, seed_keyword, region)
+    
+    
+    # --- 4. Return Final Structure ---
     return {
         "seed_keyword": seed_keyword,
         "region": region_display,
-        "high_volume_keywords": high_volume_keywords,
-        "trending_tags": trending_tags,
-        "audience_questions": audience_questions,
+        "high_volume_keywords": high_volume_keywords[:5],
+        "trending_tags": trending_tags[:6],
+        "audience_questions": [
+            f"Why is {high_volume_keywords[0]['keyword']} trending now?",
+            "What type of video format works best for this niche?",
+            "Should I focus on short-form content for this topic?",
+            "Top 5 questions about " + high_volume_keywords[0]['keyword'].split()[0],
+        ],
         "competitive_videos": competitive_videos,
     }
