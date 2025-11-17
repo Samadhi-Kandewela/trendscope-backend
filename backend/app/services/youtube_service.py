@@ -1,14 +1,17 @@
 from typing import List, Dict, Any, Optional # Added Any for the new function
 import requests
+import json
+import os 
 from flask import current_app
-# Added json for safe dummy data handling
-import json 
+from google import genai
+from google.genai.errors import APIError
 
+# --- API CONFIGURATION ---
 YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3"
-
-# --- RAPIDAPI CONFIGURATION ---
 RAPIDAPI_HOST = "keyword-research-for-youtube.p.rapidapi.com"
 RAPIDAPI_ENDPOINT = f"https://{RAPIDAPI_HOST}/yttags.php"
+GEMINI_MODEL = "gemini-2.5-flash"
+_GEMINI_CLIENT_INSTANCE = None
 
 GENRE_TO_CATEGORY_ID = {
     "Gaming": 20,
@@ -19,6 +22,20 @@ GENRE_TO_CATEGORY_ID = {
     "Vlogs": 22,     # People & Blogs
 }
 
+# --- YOUTUBE DATA API CLIENT GETTER (for external use) ---
+def _get_gemini_client():
+    """Lazily initializes the Gemini client."""
+    global _GEMINI_CLIENT_INSTANCE
+    if _GEMINI_CLIENT_INSTANCE is None:
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            current_app.logger.error("FATAL: GEMINI_API_KEY environment variable is missing.")
+            return None
+        try:
+            _GEMINI_CLIENT_INSTANCE = genai.Client(api_key=api_key)
+        except Exception as e:
+            current_app.logger.error("Gemini Client initialization failed: %s", str(e))
+    return _GEMINI_CLIENT_INSTANCE
 
 def get_trending_videos(region: str, genre: str, limit: int = 8) -> List[Dict]:
     """
@@ -93,13 +110,49 @@ def _handle_api_failure(seed_keyword: str, region: str, error: str) -> Dict[str,
         "competitive_videos": [], 
     }
 
+def _enrich_video_data(youtube_key: str, video_ids: List[str]) -> Dict[str, Dict]:
+    """
+    Makes the second API call (Batch Request) to get statistics and tags for the videos.
+    Returns a dictionary mapping videoId to its stats/tags.
+    """
+    if not video_ids:
+        return {}
+
+    # Join IDs into a comma-separated string for the batch request
+    id_string = ",".join(video_ids)
+    
+    params = {
+        "key": youtube_key,
+        "id": id_string,
+        "part": "statistics,snippet", # Request statistics and snippet (which contains tags)
+        "maxResults": 50
+    }
+    
+    try:
+        resp = requests.get(f"{YOUTUBE_API_URL}/videos", params=params, timeout=5)
+        resp.raise_for_status()
+        data = resp.json()
+        
+        enriched_data = {}
+        for item in data.get("items", []):
+            stats = item.get("statistics", {})
+            snippet = item.get("snippet", {})
+            
+            enriched_data[item["id"]] = {
+                "views": int(stats.get("viewCount", 0)),
+                "likes": int(stats.get("likeCount", 0)),
+                "tags": snippet.get("tags", []),
+            }
+        return enriched_data
+    except requests.exceptions.RequestException as e:
+        current_app.logger.error(f"YouTube Enrichment API failed: {e}")
+        return {}
+
 def _fetch_competitive_videos(youtube_key: str, seed_keyword: str, region: str) -> List[Dict]:
     """
-    Fetches the actual top-ranking videos using the YouTube Data API Search endpoint.
-    This replaces the simulation.
+    STAGE 1: Search videos and get IDs.
     """
     if not youtube_key:
-        current_app.logger.warning("YouTube API key missing for competitive video search.")
         return []
 
     params = {
@@ -108,8 +161,8 @@ def _fetch_competitive_videos(youtube_key: str, seed_keyword: str, region: str) 
         "part": "snippet",
         "type": "video",
         "regionCode": region,
-        "maxResults": 3, # We only need the Top 3
-        "order": "viewCount" # Order by view count to get high-ranking content
+        "maxResults": 3,
+        "order": "relevance" 
     }
 
     try:
@@ -117,33 +170,104 @@ def _fetch_competitive_videos(youtube_key: str, seed_keyword: str, region: str) 
         resp.raise_for_status()
         data = resp.json()
         
-        videos = []
+        search_results: List[Dict] = []
+        video_ids: List[str] = []
+        
         for item in data.get("items", []):
-            snippet = item.get("snippet", {})
             vid_id = item["id"].get("videoId")
-
-            videos.append(
-                {
-                    "title": snippet.get("title"),
-                    "channel": snippet.get("channelTitle"),
+            if vid_id:
+                video_ids.append(vid_id)
+                search_results.append({
+                    "title": item["snippet"].get("title"),
+                    "channel": item["snippet"].get("channelTitle"),
                     "videoId": vid_id,
-                    # We can't get views or tags without a second 'videos' API call, so we use N/A placeholders for views/tags
-                    "views": "N/A (2nd Call Needed)", 
-                    "summary": snippet.get("description", "No description available.").split('.')[0],
-                    "tags": ["N/A", "N/A"],
-                    "insight": "Ranks based on relevance/views.",
-                }
-            )
-        return videos
+                    "summary": item["snippet"].get("description", "No description available.").split('.')[0],
+                    "thumbnail": item["snippet"].get("thumbnails", {}).get("default", {}).get("url"),
+                })
+
+        # STAGE 2: Enrichment (calls the new function)
+        enriched_data = _enrich_video_data(youtube_key, video_ids)
+        
+        final_videos = []
+        for video in search_results:
+            video_id = video['videoId']
+            enrichment = enriched_data.get(video_id, {})
+            
+            # --- MERGE DATA ---
+            views = enrichment.get("views", "N/A")
+            tags = enrichment.get("tags", ["N/A"])
+            
+            # Create a simple insight based on the available data
+            insight_text = "Ranks highly for this search query."
+            if views != "N/A":
+                insight_text = f"Views: {_format_volume(views)}. " + insight_text
+                
+            video['views'] = _format_volume(views) # Format views for UI
+            video['tags'] = tags[:4] # Truncate tags for clean display
+            video['insight'] = insight_text
+            
+            final_videos.append(video)
+            
+        return final_videos
         
     except requests.exceptions.RequestException as e:
         current_app.logger.error(f"YouTube Search API failed: {e}")
-        return [] # Return empty list on failure
+        return []
+    
+def _generate_audience_questions(seed_keyword: str, high_volume_keywords: List[Dict]) -> List[str]:
+    """
+    Uses Gemini to generate smart, niche-specific audience questions based on the 
+    user's keyword and the generated keyword list.
+    """
+    client = _get_gemini_client()
+    if client is None:
+        return ["AI Question Generator Unavailable.", "Check service configuration."]
+        
+    top_terms = [k['keyword'] for k in high_volume_keywords]
+
+    prompt = f"""
+    You are a YouTube SEO strategist. Your goal is to generate 5 highly valuable, click-worthy video title ideas phrased as questions.
+    The videos must be about the primary topic: '{seed_keyword}'.
+
+    Focus on the intersection of these modern themes:
+    1. AI Integration (e.g., GitHub Copilot, automation)
+    2. Architecture/Frameworks (e.g., TypeScript, full-stack)
+    3. Ethics/Sustainability (e.g., privacy, green web design)
+
+    Current search keywords: {', '.join(top_terms)}.
+
+    Generate 5 distinct questions relevant to the target audience (Web Developers) and format the output as a simple Python list of strings. Do not include any prefix, numbers, or introduction.
+    """
+
+    try:
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=[prompt],
+            config=genai.types.GenerateContentConfig(
+                temperature=0.6,
+            ),
+        )
+        # Attempt to parse the response text as a Python list (LLMs often wrap it in code blocks)
+        text = response.text.strip()
+        if text.startswith("```"):
+            text = text.split('\n', 1)[1].rstrip("`")
+        
+        # Safely evaluate the string as a list of strings
+        questions = json.loads(text)
+        if isinstance(questions, list) and all(isinstance(q, str) for q in questions):
+            return questions
+        
+        # Fallback if parsing fails
+        return [f"Generated questions for '{seed_keyword}' failed to parse.", "Try searching another term."]
+
+    except Exception as e:
+        current_app.logger.error(f"Gemini Question generation error: {e}")
+        return [f"AI Service Error: {str(e)[:50]}", "Using default generic questions.", "What are the biggest challenges in this niche?"]
 
 def get_keyword_analysis(seed_keyword: str, region: str) -> Dict[str, Any]:
     """
     Fetches real keyword analysis data by calling both RapidAPI (metrics) 
-    and YouTube Data API (competitive videos).
+    and YouTube Data API (competitive videos) and Gemini (questions).
     """
     rapidapi_key = current_app.config.get("RAPIDAPI_KEY")
     youtube_key = current_app.config.get("YOUTUBE_API_KEY")
@@ -154,6 +278,8 @@ def get_keyword_analysis(seed_keyword: str, region: str) -> Dict[str, Any]:
     region_display = region if region != "Global" else "Global"
     
     # --- 1. RAPIDAPI CALL (Metrics) ---
+    # ... (RapidAPI call and error handling remain the same)
+    
     headers = {
         "x-rapidapi-host": RAPIDAPI_HOST,
         "x-rapidapi-key": rapidapi_key,
@@ -168,7 +294,6 @@ def get_keyword_analysis(seed_keyword: str, region: str) -> Dict[str, Any]:
         response.raise_for_status()
         api_data = response.json()
     except requests.exceptions.RequestException as e:
-        # Fallback if metrics fail
         return _handle_api_failure(seed_keyword, region, str(e))
 
 
@@ -200,21 +325,20 @@ def get_keyword_analysis(seed_keyword: str, region: str) -> Dict[str, Any]:
             trending_tags.append(f"#{tag_name}")
 
 
-    # --- 3. YOUTUBE API CALL (Competitive Videos - Replaces Simulation) ---
+    # --- 3. YOUTUBE API CALL (Competitive Videos - ENRICHMENT) ---
     competitive_videos = _fetch_competitive_videos(youtube_key, seed_keyword, region)
     
     
-    # --- 4. Return Final Structure ---
+    # --- 4. GEMINI API CALL (Audience Questions - REPLACES STATIC LIST) ---
+    audience_questions = _generate_audience_questions(seed_keyword, high_volume_keywords)
+    
+    
+    # --- 5. Return Final Structure ---
     return {
         "seed_keyword": seed_keyword,
         "region": region_display,
         "high_volume_keywords": high_volume_keywords[:5],
         "trending_tags": trending_tags[:6],
-        "audience_questions": [
-            f"Why is {high_volume_keywords[0]['keyword']} trending now?",
-            "What type of video format works best for this niche?",
-            "Should I focus on short-form content for this topic?",
-            "Top 5 questions about " + high_volume_keywords[0]['keyword'].split()[0],
-        ],
+        "audience_questions": audience_questions,
         "competitive_videos": competitive_videos,
     }
