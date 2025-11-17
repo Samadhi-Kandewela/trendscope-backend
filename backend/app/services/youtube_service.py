@@ -118,13 +118,12 @@ def _enrich_video_data(youtube_key: str, video_ids: List[str]) -> Dict[str, Dict
     if not video_ids:
         return {}
 
-    # Join IDs into a comma-separated string for the batch request
     id_string = ",".join(video_ids)
     
     params = {
         "key": youtube_key,
         "id": id_string,
-        "part": "statistics,snippet", # Request statistics and snippet (which contains tags)
+        "part": "statistics,snippet", # Request statistics AND snippet (which contains tags)
         "maxResults": 50
     }
     
@@ -135,13 +134,14 @@ def _enrich_video_data(youtube_key: str, video_ids: List[str]) -> Dict[str, Dict
         
         enriched_data = {}
         for item in data.get("items", []):
+            item_id = item["id"]
             stats = item.get("statistics", {})
             snippet = item.get("snippet", {})
             
-            enriched_data[item["id"]] = {
+            enriched_data[item_id] = {
                 "views": int(stats.get("viewCount", 0)),
                 "likes": int(stats.get("likeCount", 0)),
-                "tags": snippet.get("tags", []),
+                "tags": snippet.get("tags", []), 
             }
         return enriched_data
     except requests.exceptions.RequestException as e:
@@ -155,6 +155,8 @@ def _fetch_competitive_videos(youtube_key: str, seed_keyword: str, region: str) 
     if not youtube_key:
         return []
 
+    # ... (params setup remains the same)
+
     params = {
         "key": youtube_key,
         "q": seed_keyword,
@@ -162,7 +164,7 @@ def _fetch_competitive_videos(youtube_key: str, seed_keyword: str, region: str) 
         "type": "video",
         "regionCode": region,
         "maxResults": 3,
-        "order": "relevance" 
+        "order": "viewCount" # Use viewCount to get the most successful videos
     }
 
     try:
@@ -198,13 +200,14 @@ def _fetch_competitive_videos(youtube_key: str, seed_keyword: str, region: str) 
             tags = enrichment.get("tags", ["N/A"])
             
             # Create a simple insight based on the available data
-            insight_text = "Ranks highly for this search query."
-            if views != "N/A":
-                insight_text = f"Views: {_format_volume(views)}. " + insight_text
+            insight_text = f"Views: {_format_volume(views)}. Ranks highly for this search query."
                 
             video['views'] = _format_volume(views) # Format views for UI
-            video['tags'] = tags[:4] # Truncate tags for clean display
+            video['tags'] = tags[:4] # Use real tags, truncated for clean display
             video['insight'] = insight_text
+            
+            # Add a basic summary for the competitive insight panel
+            video['summary'] = video['summary'] if len(video['summary']) < 150 else video['summary'][:150] + "..."
             
             final_videos.append(video)
             
@@ -226,17 +229,15 @@ def _generate_audience_questions(seed_keyword: str, high_volume_keywords: List[D
     top_terms = [k['keyword'] for k in high_volume_keywords]
 
     prompt = f"""
-    You are a YouTube SEO strategist. Your goal is to generate 5 highly valuable, click-worthy video title ideas phrased as questions.
-    The videos must be about the primary topic: '{seed_keyword}'.
+    You are a YouTube SEO strategist and niche expert. Your goal is to generate 5 highly valuable, click-worthy video title ideas phrased as questions.
+    
+    The audience and strategic focus must be inferred from the primary topic: '{seed_keyword}' and the top search terms: {', '.join(top_terms)}.
 
-    Focus on the intersection of these modern themes:
-    1. AI Integration (e.g., GitHub Copilot, automation)
-    2. Architecture/Frameworks (e.g., TypeScript, full-stack)
-    3. Ethics/Sustainability (e.g., privacy, green web design)
-
-    Current search keywords: {', '.join(top_terms)}.
-
-    Generate 5 distinct questions relevant to the target audience (Web Developers) and format the output as a simple Python list of strings. Do not include any prefix, numbers, or introduction.
+    Instructions:
+    1. Infer the target audience (e.g., Gamers, Investors, Developers, Consumers).
+    2. Generate questions that address the audience's biggest current challenges, fears, or aspirations related to the topic.
+    3. Ensure at least two questions incorporate a specific keyword from the provided list.
+    4. Generate 5 distinct questions and format the output as a simple Python list of strings. Do not include any prefix, numbers, or introduction.
     """
 
     try:
