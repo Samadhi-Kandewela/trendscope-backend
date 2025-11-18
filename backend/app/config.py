@@ -19,7 +19,8 @@ def _normalize_db_url(url: str | None) -> str | None:
 RAPIDAPI_KEY_ENV = os.getenv("RAPIDAPI_KEY", "")
 
 class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-me")
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret")
     SQLALCHEMY_DATABASE_URI = _normalize_db_url(os.getenv("DB_URL"))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

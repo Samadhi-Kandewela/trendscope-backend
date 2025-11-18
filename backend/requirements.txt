@@ -10,3 +10,6 @@ joblib==1.4.2
 Flask-Cors==4.0.0
 scikit-learn==1.5.2
 google-genai==0.3.0
+Flask-Bcrypt==1.0.1
+PyJWT==2.8.0
+Flask-JWT-Extended==4.6.0
