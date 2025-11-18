@@ -1,28 +1,53 @@
-# Ignore Python virtual env
+###############################
+# BACKEND (Python / Flask)
+###############################
+
+# Python virtual environment
 venv/
 
-# Ignore environment variables
+# Environment variables
 backend/.env
 
-# Ignore large CSV datasets
+# Large datasets
 backend/filtered_2020_english.csv
 backend/filtered_old_dataset_english.csv
 
-# Ignore pycache
+# Compiled Python files
+*.pyc
+
+# Pycache
 __pycache__/
 backend/__pycache__/
 backend/app/__pycache__/
 backend/app/*/__pycache__/
 backend/scripts/__pycache__/
 
-# Ignore compiled Python files
-*.pyc
-
-# Ignore model pickle files (optional)
+# Model artifacts (optional)
 backend/app/ml/models/*.pkl
 
-# Ignore VSCode workspace files
-.vscode/
-
-# Ignore migrations cache (OPTIONAL)
+# Alembic migration cache
 backend/migrations/*.pyc
+
+
+
+
+###############################
+# EDITOR / OS FILES
+###############################
+
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+
+# JetBrains
+.idea
+
+# OS junk files
+.DS_Store
+
+# Visual Studio junk files
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
