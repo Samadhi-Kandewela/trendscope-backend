@@ -6,6 +6,11 @@ STOPWORDS = {
     "the", "a", "an", "to", "for", "of", "and", "in", "on",
     "this", "that", "with", "how", "what", "is", "are", "vs",
     "you", "your", "from", "new", "best", "top",
+    "video", "official", "clip", "full", "hd", "trailer",
+    "music", "song", "lyric", "lyrics", "ft", "feat",
+    "live", "stream", "show", "episode", "season", "series",
+    "super", "bowl", "official", "clip", "full", "hd", "trailer",
+    "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026",
 }
 
 

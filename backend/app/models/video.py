@@ -22,7 +22,11 @@ class Video(db.Model):
     trending_country = db.Column(db.String(64), index=True)
     trending_date = db.Column(db.DateTime, index=True)
     published_at = db.Column(db.DateTime, index=True)
-    source_dataset = db.Column(db.String(32))             # "2020" or "old"
+    source_dataset = db.Column(db.String(32))             # "2020" or "old" or "live_api"
+
+    # Sentiment Analysis Fields
+    sentiment_score = db.Column(db.Float)                 # avg sentiment of comments
+    dominant_emotion = db.Column(db.String(32))           # prevailing emotion
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 

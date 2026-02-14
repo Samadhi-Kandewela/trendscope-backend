@@ -1,0 +1,8 @@
+INFO:apscheduler.scheduler:Adding job tentatively -- it will be properly scheduled when the scheduler starts
+INFO:apscheduler.scheduler:Added job "run_ingestion" to job store "default"
+INFO:apscheduler.scheduler:Scheduler started
+INFO:app:Scheduler started with daily ingestion job.
+INFO:app:Trend-strategy request: region=US (norm=US), start=2026-03-10T00:05:35.108306, end=2026-05-09T00:05:35.108306, months=[3, 4, 5]
+INFO:app:Loaded trend topic model from E:\TrendScope\backend\app\ml\models\trend_topic_model.pkl
+INFO:root:AFC is enabled with max remote calls: 10.
+INFO:apscheduler.scheduler:Scheduler has been shut down

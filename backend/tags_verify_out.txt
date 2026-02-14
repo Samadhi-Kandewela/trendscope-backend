@@ -1,0 +1,20 @@
+Status: 200
+Body: [
+  {
+    "count": 5,
+    "tag": "gaming"
+  },
+  {
+    "count": 3,
+    "tag": "strategy"
+  },
+  {
+    "count": 1,
+    "tag": "#test"
+  },
+  {
+    "count": 1,
+    "tag": "productivity"
+  }
+]
+

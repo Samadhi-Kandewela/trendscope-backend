@@ -1,0 +1,73 @@
+Error processing sentiment: (psycopg2.errors.UndefinedTable) relation "comments" does not exist
+LINE 2: FROM comments 
+             ^
+
+[SQL: SELECT comments.id AS comments_id, comments.video_id AS comments_video_id, comments.author_display_name AS comments_author_display_name, comments.text_display AS comments_text_display, comments.like_count AS comments_like_count, comments.published_at AS comments_published_at, comments.sentiment_score AS comments_sentiment_score, comments.emotion_label AS comments_emotion_label, comments.created_at AS comments_created_at 
+FROM comments 
+WHERE comments.id = %(id_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'id_1': 'Ugykr2xFKRqds_H5El14AaABAg', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 924, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedTable: relation "comments" does not exist
+LINE 2: FROM comments 
+             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\TrendScope\backend\verify_sentiment.py", line 33, in <module>
+    merger.process_video_sentiment(video.id)
+  File "E:\TrendScope\backend\app\services\data_manager.py", line 148, in process_video_sentiment
+    existing_c = self.session.query(Comment).filter_by(id=c["id"]).first()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2728, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2827, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2236, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2353, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\Dell\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 924, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedTable) relation "comments" does not exist
+LINE 2: FROM comments 
+             ^
+
+[SQL: SELECT comments.id AS comments_id, comments.video_id AS comments_video_id, comments.author_display_name AS comments_author_display_name, comments.text_display AS comments_text_display, comments.like_count AS comments_like_count, comments.published_at AS comments_published_at, comments.sentiment_score AS comments_sentiment_score, comments.emotion_label AS comments_emotion_label, comments.created_at AS comments_created_at 
+FROM comments 
+WHERE comments.id = %(id_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'id_1': 'Ugykr2xFKRqds_H5El14AaABAg', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/f405)

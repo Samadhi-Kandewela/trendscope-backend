@@ -1,0 +1,2 @@
+SUCCESS: Log saved. Score: 0.03648998114210165
+Details: {'n_samples': 2000, 'n_clusters': 30, 'metric': 'Silhouette Score (-1 to 1)'}
