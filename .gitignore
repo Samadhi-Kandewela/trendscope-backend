@@ -28,9 +28,6 @@ backend/app/ml/models/*.pkl
 # Alembic migration cache
 backend/migrations/*.pyc
 
-
-
-
 ###############################
 # EDITOR / OS FILES
 ###############################

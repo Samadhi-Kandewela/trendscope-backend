@@ -194,6 +194,99 @@ def fetch_all_trending_videos(region: str) -> List[Dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
+# Channel info fetcher (for Creator Onboarding)
+# ---------------------------------------------------------------------------
+def fetch_channel_info(channel_url: str) -> Optional[Dict[str, Any]]:
+    """
+    Fetches YouTube channel info from a URL.
+    Supports: /@handle, /channel/UCxxxx, /c/customname, /user/username
+    Returns dict with channelId, channelName, subscriberCount, etc.
+    """
+    import re
+
+    youtube_key = os.getenv("YOUTUBE_API_KEY") or (
+        current_app.config.get("YOUTUBE_API_KEY")
+    )
+    if not youtube_key:
+        return {"error": "YouTube API key not configured"}
+
+    channel_id = None
+    # Pattern 1: /channel/UCxxxxxxx
+    m = re.search(r"/channel/(UC[\w-]+)", channel_url)
+    if m:
+        channel_id = m.group(1)
+
+    # Pattern 2: /@handle or /c/name or /user/name
+    if not channel_id:
+        handle = None
+        m = re.search(r"/@([\w.-]+)", channel_url)
+        if m:
+            handle = m.group(1)
+        else:
+            m = re.search(r"/(?:c|user)/([\w.-]+)", channel_url)
+            if m:
+                handle = m.group(1)
+
+        if handle:
+            # Use search to resolve handle to channel ID
+            try:
+                search_url = f"{YOUTUBE_API_URL}/search"
+                resp = requests.get(search_url, params={
+                    "key": youtube_key,
+                    "q": handle,
+                    "type": "channel",
+                    "part": "snippet",
+                    "maxResults": 1,
+                }, timeout=10)
+                if resp.status_code == 200:
+                    items = resp.json().get("items", [])
+                    if items:
+                        channel_id = items[0]["snippet"]["channelId"]
+            except Exception as e:
+                current_app.logger.error("Channel search failed: %s", e)
+
+    if not channel_id:
+        return {"error": "Could not extract channel ID from URL"}
+
+    # Fetch full channel details
+    try:
+        resp = requests.get(f"{YOUTUBE_API_URL}/channels", params={
+            "key": youtube_key,
+            "id": channel_id,
+            "part": "snippet,statistics",
+        }, timeout=10)
+
+        if resp.status_code != 200:
+            return {"error": f"YouTube API error: {resp.status_code}"}
+
+        items = resp.json().get("items", [])
+        if not items:
+            return {"error": "Channel not found"}
+
+        ch = items[0]
+        snippet = ch.get("snippet", {})
+        stats = ch.get("statistics", {})
+
+        return {
+            "channelId": channel_id,
+            "channelName": snippet.get("title", ""),
+            "description": (snippet.get("description") or "")[:500],
+            "thumbnail": (
+                snippet.get("thumbnails", {}).get("medium", {}).get("url")
+                or snippet.get("thumbnails", {}).get("default", {}).get("url")
+                or ""
+            ),
+            "subscriberCount": int(stats.get("subscriberCount", 0)),
+            "totalViews": int(stats.get("viewCount", 0)),
+            "videoCount": int(stats.get("videoCount", 0)),
+        }
+
+    except Exception as e:
+        current_app.logger.error("fetch_channel_info failed: %s", e)
+        return {"error": str(e)}
+
+
+# ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 def _format_volume(volume: int | float) -> str:

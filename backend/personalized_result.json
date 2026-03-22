@@ -1,0 +1,107 @@
+{
+  "coreGenre": "Music",
+  "coreTrend": "Music \u2014 Food",
+  "detailedStrategy": "For 2026, the modern trend for gaming tutorials, particularly for a new creator targeting 18-24 in the US, lies in the fusion of interactive entertainment with lifestyle elements like food, underscored by engaging audio experiences. Capitalize on the 'Music \u2014 Food' core trend by crafting clear, step-by-step tutorials focused on culinary aspects within popular video games (e.g., mastering cooking mechanics in *Stardew Valley*, *Minecraft*, or *Animal Crossing*). Alternatively, create 'gamer grub' tutorials \u2013 quick, easy, and healthy snack or meal recipes specifically designed for gaming sessions, presented in a fun, tutorial style. Incorporate trending, upbeat background music or satisfying sound effects to enhance the positive sentiment and appeal. Emphasize the creativity, comfort, and practical skills these tutorials offer, fostering a sense of community and achievement. This niche approach will attract a dedicated audience by blending practical gaming guidance with relatable lifestyle content, driving initial views and sustained engagement.",
+  "endDate": "2026-03-18T00:00:00",
+  "marketingInsights": [
+    "Pixel Plate Perfection",
+    "Gamer Grub Guides",
+    "Rhythm Recipe Runs",
+    "Controller Kitchen Hacks",
+    "Level-Up Your Lore-Friendly Meals"
+  ],
+  "mlSignals": {
+    "coreGenre": "Music",
+    "coreTrend": "Music \u2014 Food",
+    "creatorProfile": {
+      "channelName": "N/A",
+      "contentStyle": "Tutorials",
+      "creatorGoal": "increase_views",
+      "primaryGenre": "Gaming",
+      "subscriberCount": 0,
+      "targetAudienceAge": "18-24",
+      "targetRegion": "US"
+    },
+    "effectiveMonths": [
+      2,
+      3
+    ],
+    "effectiveRegion": "US",
+    "representativeDescriptions": [
+      "Taylor Swift reputation Stadium Tour Tickets are on sale now. Get tickets here: video by Taylor Swift performing Delicate. \u00a92018 Big Machine Label Group LLC\\n\\n",
+      "The official video for Eminem's River featuring Ed Sheeran. Available now on the album Revival: \\n\\nFor more visit: video by Eminem performing River. (C) 2018 Aftermath Records\\n\\n",
+      "Shakira feat. Maluma - Trap (Official Music Video)\\nEl Dorado is available now!\\niTunes: Music: Play: Shakira!\\nOfficial site: Maluma!\\nOfficial site: music video by Shakira feat. Maluma performing Trap. (C) 2018 Sony Music Entertainment US Latin LLC",
+      "National Suicide Prevention Lifeline\\nCall 1-800-273-8255\\nCrisis Textline, Free 24/7 Support: Text 741741\\n\\nLearn how you can #BeThe1To save a life. Help someone in crisis at:\\n Thanks to Kevin Hines. Learn about his story: Kevin on IG: Kevin on Twitter: out his movie \u201cSuicide: The Ripple Effect\u201d: and Montgomery Productions: Thanks to Bob Forrest:\\nLearn about Alo House Recovery Centers: more about Bob: Thanks to Dr. John Draper:\\nLearn more about the Suicide Prevention Lifeline: Taylor:\\n",
+      "j-hope 'Daydream (\ubc31\uc77c\ubabd)'\\n\\n\\nj-hope's 'Daydream (\ubc31\uc77c\ubabd)', the first mixtape album is out now.\\n\\n\\n\\nGet 'Daydream (\ubc31\uc77c\ubabd)' on:\\nGoogle: : YongSeok Choi (Lumpens)\\nAssistant Directors : WonJu Lee (Lumpens)\\nDirector of Photography : HyunWoo Nam(GDW)\\nGaffer : HyunSuk Song (Real Lighting)\\nArt Director : JinSil Park Bona Kim (MU:E)\\n\\nProduced by Pdogg\\n(Pdogg, j-hope)\\n\\n\\n\\nBigHit Entertainment. All rights reserved. \\nUnauthorized reproduction is a violation of applicable laws. \\nManufactured by BigHit Entertainment, Seoul, Korea.\\n\\n\\n\\n\\nConnect with BTS:\\n \\n \\n \\n"
+    ],
+    "representativeTitles": [
+      "Taylor Swift - Delicate",
+      "Eminem - River ft. Ed Sheeran",
+      "Shakira - Trap (Official Video) ft. Maluma",
+      "Suicide: Be Here Tomorrow.",
+      "j-hope 'Daydream (\ubc31\uc77c\ubabd)' MV"
+    ],
+    "sentiment_ratio": 0.9599289096205691,
+    "strategyEngine": "gemini",
+    "topKeywords": [
+      "food",
+      "makeup",
+      "game",
+      "kevin",
+      "street",
+      "gates",
+      "wwe",
+      "black"
+    ]
+  },
+  "region": "US",
+  "sentiment": {
+    "negative": 0.03,
+    "neutral": 0.01,
+    "positive": 0.96
+  },
+  "startDate": "2026-02-16T00:00:00",
+  "strategySource": "ml-topic-model-gemini",
+  "suggestedVideos": [
+    {
+      "channel": "TaylorSwiftVEVO",
+      "thumbnail": "https://i.ytimg.com/vi/tCXGJQYZ9JA/default.jpg",
+      "title": "Taylor Swift - Delicate",
+      "url": "https://www.youtube.com/watch?v=tCXGJQYZ9JA",
+      "videoId": "tCXGJQYZ9JA",
+      "views": 71560694
+    },
+    {
+      "channel": "EminemVEVO",
+      "thumbnail": "https://i.ytimg.com/vi/wfWIs2gFTAM/default.jpg",
+      "title": "Eminem - River ft. Ed Sheeran",
+      "url": "https://www.youtube.com/watch?v=wfWIs2gFTAM",
+      "videoId": "wfWIs2gFTAM",
+      "views": 32730338
+    },
+    {
+      "channel": "shakiraVEVO",
+      "thumbnail": "https://i.ytimg.com/vi/zkG4Xpz6t68/default.jpg",
+      "title": "Shakira - Trap (Official Video) ft. Maluma",
+      "url": "https://www.youtube.com/watch?v=zkG4Xpz6t68",
+      "videoId": "zkG4Xpz6t68",
+      "views": 25142629
+    },
+    {
+      "channel": "Logan Paul Vlogs",
+      "thumbnail": "https://i.ytimg.com/vi/oWjxSkJpxFU/default.jpg",
+      "title": "Suicide: Be Here Tomorrow.",
+      "url": "https://www.youtube.com/watch?v=oWjxSkJpxFU",
+      "videoId": "oWjxSkJpxFU",
+      "views": 24286474
+    },
+    {
+      "channel": "ibighit",
+      "thumbnail": "https://i.ytimg.com/vi/OK3GJ0WIQ8s/default.jpg",
+      "title": "j-hope 'Daydream (\ubc31\uc77c\ubabd)' MV",
+      "url": "https://www.youtube.com/watch?v=OK3GJ0WIQ8s",
+      "videoId": "OK3GJ0WIQ8s",
+      "views": 23416810
+    }
+  ]
+}

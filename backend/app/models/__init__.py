@@ -4,3 +4,4 @@ from .user import User
 from .comment import Comment
 from .accuracy import AccuracyLog
 from .community import Discussion, DiscussionComment
+from .creator_profile import CreatorProfile

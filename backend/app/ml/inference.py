@@ -99,3 +99,31 @@ def load_advanced_trend_model() -> Optional[Dict[str, Any]]:
     except Exception as e:
         current_app.logger.error("Failed to load advanced model: %s", e)
         return None
+
+
+# NEW (Phase 6b): Hybrid Trend Model (S-BERT + K-Means)
+_hybrid_trend_model_cache: Optional[Dict[str, Any]] = None
+
+def load_hybrid_trend_model() -> Optional[Dict[str, Any]]:
+    """
+    Loads hybrid_trend_model.pkl (S-BERT + K-Means)
+    """
+    global _hybrid_trend_model_cache
+    if _hybrid_trend_model_cache is not None:
+        return _hybrid_trend_model_cache
+
+    model_path = MODELS_DIR / "hybrid_trend_model.pkl"
+    if not model_path.exists():
+        current_app.logger.warning("Hybrid model file not found at %s", model_path)
+        return None
+
+    import gc
+    try:
+        current_app.logger.info("Loading HYBRID trend model from %s...", model_path)
+        gc.collect() # Free up memory before loading
+        _hybrid_trend_model_cache = joblib.load(model_path) # mmap_mode might help if file is huge, but it's small here
+        current_app.logger.info("Successfully loaded HYBRID trend model.")
+        return _hybrid_trend_model_cache
+    except BaseException as e: # Catch everything including SystemExit
+        current_app.logger.error("CRITICAL FAILURE loading hybrid model: %s", e)
+        return None

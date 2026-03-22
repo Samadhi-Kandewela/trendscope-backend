@@ -19,19 +19,26 @@ def create_app(config_class=DevConfig):
     jwt.init_app(app)
     
     # Import models to ensure they are registered with SQLAlchemy
-    from .models import video, clean_video, user, comment, accuracy
+    from .models import video, clean_video, user, comment, accuracy, creator_profile
 
     # Blueprints
     app.register_blueprint(dashboard_bp, url_prefix="/api/dashboard")
     from .api.monitoring import monitoring_bp
     from .api.community import community_bp
+    from .api.onboarding import onboarding_bp
     app.register_blueprint(monitoring_bp, url_prefix="/api/monitoring")
     app.register_blueprint(analytics_bp, url_prefix="/api/analytics")
     app.register_blueprint(explorer_bp, url_prefix="/api/explorer")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(community_bp, url_prefix="/api/community")
+    app.register_blueprint(onboarding_bp, url_prefix="/api/onboarding")
     from .api.upload import upload_bp
     app.register_blueprint(upload_bp, url_prefix="/api/upload")
+
+    # CLI Commands
+    from .cli import register_commands
+    register_commands(app)
+
 
     # Start the scheduler
     start_scheduler(app)

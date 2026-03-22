@@ -1,0 +1,12 @@
+[
+    {
+        "title_clean": "Testing Hybrid Model",
+        "tags_clean": "test ai machine learning",
+        "description_clean": "This is a test description for the hybrid model inference script."
+    },
+    {
+        "title_clean": "Second Video Example",
+        "tags_clean": "example video content",
+        "description_clean": "Another description to ensure batch processing works."
+    }
+]

@@ -1,0 +1,167 @@
+{
+  "contentGaps": [
+    {
+      "insight": "'Food' is a top keyword and part of the dominant 'Music \u2014 Food' core trend. While you explore destinations, deep-dives into culinary experiences are a massive untapped opportunity.",
+      "topic": "Food-focused travel vlogs (especially street food)"
+    },
+    {
+      "insight": "'Black' is a rising keyword, and given the context (February/March in the US), specific cultural or historical travel related to Black heritage is a high-performing niche you likely haven't covered.",
+      "topic": "Cultural travel with a focus on specific communities"
+    }
+  ],
+  "coreGenre": "Music",
+  "coreTrend": "Music \u2014 Food",
+  "detailedStrategy": "To boost your views, infuse your travel vlogs with trending 'food' and 'music' elements, specifically exploring vibrant street food scenes and music-rich destinations. Additionally, consider timely cultural content around 'Black' history, leveraging optimal posting times and SEO-friendly titles to capture your target audience effectively.",
+  "emergingTrends": [
+    {
+      "relevanceToYou": "This is a prime chance to diversify your travel vlogs by focusing on the delicious local cuisine and vibrant street scenes.",
+      "signal": "'+45% search volume' for 'food' and 'street', crossing over from Music into Travel content.",
+      "trend": "Culinary Travel & Street Food Scene"
+    },
+    {
+      "relevanceToYou": "Highlighting diverse cultural narratives and historical sites, particularly within the US, can resonate deeply with your audience.",
+      "signal": "'Black' is a top keyword, especially relevant in February/March for US audiences.",
+      "trend": "Cultural & Heritage Exploration (specifically Black History)"
+    },
+    {
+      "relevanceToYou": "You can explore destinations known for their musical heritage, festivals, or the birthplaces of iconic genres and artists.",
+      "signal": "'Music' is a core trending genre, influencing related searches across niches.",
+      "trend": "Music-Inspired Travel Destinations"
+    }
+  ],
+  "endDate": "2026-03-19T00:00:00",
+  "marketingInsights": [
+    "Taste the World: Your Next Culinary Journey!",
+    "Beyond the Sights: Travel for the Soul & Sound!",
+    "Street by Street: Unveiling Urban Gems!",
+    "History Comes Alive: Explore America's Untold Stories!",
+    "Vlog Like a Local: Eat, Jam, Discover!"
+  ],
+  "mlSignals": {
+    "coreGenre": "Music",
+    "coreTrend": "Music \u2014 Food",
+    "creatorProfile": {
+      "channelName": "N/A",
+      "contentStyle": "Vlogs",
+      "creatorGoal": "increase_views",
+      "primaryGenre": "Travel",
+      "subscriberCount": 0,
+      "targetAudienceAge": "25-34",
+      "targetRegion": "US"
+    },
+    "effectiveMonths": [
+      2,
+      3
+    ],
+    "effectiveRegion": "US",
+    "isPersonalized": true,
+    "representativeDescriptions": [
+      "Taylor Swift reputation Stadium Tour Tickets are on sale now. Get tickets here: video by Taylor Swift performing Delicate. \u00a92018 Big Machine Label Group LLC\\n\\n",
+      "The official video for Eminem's River featuring Ed Sheeran. Available now on the album Revival: \\n\\nFor more visit: video by Eminem performing River. (C) 2018 Aftermath Records\\n\\n",
+      "Shakira feat. Maluma - Trap (Official Music Video)\\nEl Dorado is available now!\\niTunes: Music: Play: Shakira!\\nOfficial site: Maluma!\\nOfficial site: music video by Shakira feat. Maluma performing Trap. (C) 2018 Sony Music Entertainment US Latin LLC",
+      "National Suicide Prevention Lifeline\\nCall 1-800-273-8255\\nCrisis Textline, Free 24/7 Support: Text 741741\\n\\nLearn how you can #BeThe1To save a life. Help someone in crisis at:\\n Thanks to Kevin Hines. Learn about his story: Kevin on IG: Kevin on Twitter: out his movie \u201cSuicide: The Ripple Effect\u201d: and Montgomery Productions: Thanks to Bob Forrest:\\nLearn about Alo House Recovery Centers: more about Bob: Thanks to Dr. John Draper:\\nLearn more about the Suicide Prevention Lifeline: Taylor:\\n",
+      "j-hope 'Daydream (\ubc31\uc77c\ubabd)'\\n\\n\\nj-hope's 'Daydream (\ubc31\uc77c\ubabd)', the first mixtape album is out now.\\n\\n\\n\\nGet 'Daydream (\ubc31\uc77c\ubabd)' on:\\nGoogle: : YongSeok Choi (Lumpens)\\nAssistant Directors : WonJu Lee (Lumpens)\\nDirector of Photography : HyunWoo Nam(GDW)\\nGaffer : HyunSuk Song (Real Lighting)\\nArt Director : JinSil Park Bona Kim (MU:E)\\n\\nProduced by Pdogg\\n(Pdogg, j-hope)\\n\\n\\n\\nBigHit Entertainment. All rights reserved. \\nUnauthorized reproduction is a violation of applicable laws. \\nManufactured by BigHit Entertainment, Seoul, Korea.\\n\\n\\n\\n\\nConnect with BTS:\\n \\n \\n \\n"
+    ],
+    "representativeTitles": [
+      "Taylor Swift - Delicate",
+      "Eminem - River ft. Ed Sheeran",
+      "Shakira - Trap (Official Video) ft. Maluma",
+      "Suicide: Be Here Tomorrow.",
+      "j-hope 'Daydream (\ubc31\uc77c\ubabd)' MV"
+    ],
+    "sentiment_ratio": 0.9599289096205691,
+    "strategyEngine": "gemini",
+    "topKeywords": [
+      "food",
+      "makeup",
+      "game",
+      "kevin",
+      "street",
+      "gates",
+      "wwe",
+      "black"
+    ]
+  },
+  "optimalPosting": {
+    "bestDays": "Tuesdays & Thursdays",
+    "bestTime": "2pm - 5pm EST",
+    "reason": "This window typically sees peak engagement from your 25-34 year old US-based audience, catching them after work or during afternoon breaks."
+  },
+  "personalizedIntro": "\u2708\ufe0f Your February-March 2026 strategy is ready! We've identified 3 unique opportunities perfectly tailored for your travel vlogs.",
+  "recommendedAngles": [
+    {
+      "angle": "Ultimate Street Food Tour: [City Name] - What I Ate in a Day!",
+      "why": "This directly leverages 'food' and 'street' keywords for high engagement."
+    },
+    {
+      "angle": "Uncovering Hidden Black History Travel Gems in the US",
+      "why": "This capitalizes on the 'black' keyword and the current seasonal relevance for deeper, impactful content."
+    },
+    {
+      "angle": "Travel to the Rhythm: Exploring Iconic Music Cities",
+      "why": "This creatively merges the 'music' trend with your travel niche, offering a fresh perspective."
+    }
+  ],
+  "region": "US",
+  "sentiment": {
+    "negative": 0.03,
+    "neutral": 0.01,
+    "positive": 0.96
+  },
+  "startDate": "2026-02-17T00:00:00",
+  "strategySource": "ml-topic-model-gemini",
+  "suggestedVideos": [
+    {
+      "channel": "TaylorSwiftVEVO",
+      "thumbnail": "https://i.ytimg.com/vi/tCXGJQYZ9JA/default.jpg",
+      "title": "Taylor Swift - Delicate",
+      "url": "https://www.youtube.com/watch?v=tCXGJQYZ9JA",
+      "videoId": "tCXGJQYZ9JA",
+      "views": 71560694
+    },
+    {
+      "channel": "EminemVEVO",
+      "thumbnail": "https://i.ytimg.com/vi/wfWIs2gFTAM/default.jpg",
+      "title": "Eminem - River ft. Ed Sheeran",
+      "url": "https://www.youtube.com/watch?v=wfWIs2gFTAM",
+      "videoId": "wfWIs2gFTAM",
+      "views": 32730338
+    },
+    {
+      "channel": "shakiraVEVO",
+      "thumbnail": "https://i.ytimg.com/vi/zkG4Xpz6t68/default.jpg",
+      "title": "Shakira - Trap (Official Video) ft. Maluma",
+      "url": "https://www.youtube.com/watch?v=zkG4Xpz6t68",
+      "videoId": "zkG4Xpz6t68",
+      "views": 25142629
+    },
+    {
+      "channel": "Logan Paul Vlogs",
+      "thumbnail": "https://i.ytimg.com/vi/oWjxSkJpxFU/default.jpg",
+      "title": "Suicide: Be Here Tomorrow.",
+      "url": "https://www.youtube.com/watch?v=oWjxSkJpxFU",
+      "videoId": "oWjxSkJpxFU",
+      "views": 24286474
+    },
+    {
+      "channel": "ibighit",
+      "thumbnail": "https://i.ytimg.com/vi/OK3GJ0WIQ8s/default.jpg",
+      "title": "j-hope 'Daydream (\ubc31\uc77c\ubabd)' MV",
+      "url": "https://www.youtube.com/watch?v=OK3GJ0WIQ8s",
+      "videoId": "OK3GJ0WIQ8s",
+      "views": 23416810
+    }
+  ],
+  "titleSuggestions": [
+    {
+      "draft": "My Trip to New Orleans",
+      "optimized": "New Orleans STREET FOOD TOUR! \ud83c\udfb6 Best MUSIC & EATS in the French Quarter!",
+      "whyBetter": "Adding 'STREET FOOD', 'MUSIC', and 'EATS' directly incorporates top trending keywords, boosting click-through rates and search visibility."
+    },
+    {
+      "draft": "Visiting Historical Places in America",
+      "optimized": "BLACK HISTORY MONTH Travel: Exploring America's Forgotten Stories (2026 US Tour)",
+      "whyBetter": "Using 'BLACK HISTORY MONTH' makes the title timely and highly searchable, while 'America' and 'US Tour' target your specific audience and region."
+    }
+  ]
+}
