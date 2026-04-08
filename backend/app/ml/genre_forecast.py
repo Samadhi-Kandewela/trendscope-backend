@@ -42,33 +42,30 @@ def _predict_for_single_region(region_code: str, month: int) -> Dict[str, float]
 
 def _get_live_genre_distribution(region: str) -> Dict[str, float]:
     """
-    Calculates the percentage of each genre in the Live API data (last 30 days).
+    Calculates genre distribution from Live API data weighted by view_count.
+    View-weighting ensures this matches the Trend Strategy (which also weights
+    by engagement), eliminating the mismatch where Vlogs had more videos but
+    Lifestyle had more views.
     Returns {genre_name: share_float} (e.g. {"Gaming": 0.4, "Tech": 0.2})
     """
-    # 1. Query Live Data
-    query = db.session.query(Video.category_id).filter(
+    query = db.session.query(Video.category_id, Video.view_count).filter(
         Video.source_dataset == 'live_api'
     )
-    
     if region != "Global":
         query = query.filter(Video.trending_country == region)
-        
-    # Get all category IDs
+
     rows = query.all()
     if not rows:
         return {}
-        
-    total = len(rows)
-    counts = {}
-    
-    # 2. Map to UI Genres and Count
-    for r in rows:
-        cat_id = r[0]
+
+    # Accumulate total views per genre (engagement-weighted, not count-weighted)
+    view_totals: Dict[str, float] = {}
+    for cat_id, view_count in rows:
         genre = CATEGORY_TO_UI_GENRE.get(cat_id, "Other")
-        counts[genre] = counts.get(genre, 0) + 1
-        
-    # 3. Normalize to 0.0-1.0
-    return {g: c / total for g, c in counts.items()}
+        view_totals[genre] = view_totals.get(genre, 0) + float(view_count or 0)
+
+    total_views = sum(view_totals.values()) or 1.0
+    return {g: v / total_views for g, v in view_totals.items()}
 
 
 def get_genre_forecast_distribution(

@@ -11,6 +11,21 @@ STOPWORDS = {
     "live", "stream", "show", "episode", "season", "series",
     "super", "bowl", "official", "clip", "full", "hd", "trailer",
     "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026",
+    # Platform noise — these are never trend signals
+    "youtube", "subscribe", "like", "comment", "channel", "notification",
+    "bell", "follow", "instagram", "twitter", "facebook", "tiktok",
+    "click", "here", "watch", "check", "merch", "patreon", "discord",
+    "link", "below", "join", "free", "get", "use", "code", "sponsored",
+    # Channel-name noise — specific creator brand names, not genre signals
+    "guava", "juice", "ishowspeed", "mrbeast", "dude", "perfect", "blossom",
+    # Late-night TV / talk show noise — appear in entertainment clusters
+    "fallon", "jimmy", "nbc", "tonight", "noggin", "idol", "interview",
+    "letterman", "conan", "kimmel", "colbert", "leno", "seth", "meyers",
+    # Generic names that are always channel/person noise, never trend signals
+    "smith", "will", "snl", "ellen", "oprah",
+    # Generic descriptors that are never meaningful trend signals on their own
+    "friendly", "family", "test", "dog", "cat", "animal", "pet",
+    "man", "woman", "boy", "girl", "kid", "baby",
 }
 
 

@@ -1,0 +1,66 @@
+{
+  "trainedAt": "2026-03-26T03:35:30.345998",
+  "modelVersion": "v2 (leakage-free)",
+  "trainingSize": 172000,
+  "testSize": 43000,
+  "positiveRate": 0.25,
+  "trendThresholdViews": 1735671,
+  "genre": "All",
+  "splitMethod": "temporal",
+  "dataLeakageNote": "like_count_log and comment_count_log removed in v2. Engagement magnitude is a consequence of viral views (the target), not a predictor of future virality. Previous 99.28% accuracy was inflated by this circular relationship. Honest accuracy after fix reflects real predictive power.",
+  "featuresUsed": [
+    "comment_ratio",
+    "title_word_count",
+    "tags_count",
+    "niche_relevance_score",
+    "keyword_density"
+  ],
+  "baseline": {
+    "model": "Logistic Regression",
+    "accuracy": 0.5459,
+    "f1_score": 0.6305,
+    "precision": 0.8609,
+    "recall": 0.5459,
+    "roc_auc": 0.7002,
+    "confusionMatrix": {
+      "TP": 3231,
+      "FP": 18304,
+      "TN": 20242,
+      "FN": 1223
+    }
+  },
+  "improved": {
+    "model": "Random Forest",
+    "accuracy": 0.7474,
+    "f1_score": 0.7916,
+    "precision": 0.8724,
+    "recall": 0.7474,
+    "roc_auc": 0.7658,
+    "confusionMatrix": {
+      "TP": 2788,
+      "FP": 9194,
+      "TN": 29352,
+      "FN": 1666
+    }
+  },
+  "improvement": {
+    "f1_delta": 0.1611,
+    "accuracy_delta": 0.2015,
+    "auc_delta": 0.0656,
+    "summary": "Random Forest outperforms Logistic Regression by 16.1pp F1, 20.1pp accuracy."
+  },
+  "crossValidation": {
+    "model": "Random Forest",
+    "folds": 5,
+    "meanF1": 0.7424,
+    "stdF1": 0.0009,
+    "interpretation": "Low std indicates stable generalization across data splits."
+  },
+  "featureImportance": {
+    "comment_ratio": 0.5549,
+    "tags_count": 0.168,
+    "title_word_count": 0.1464,
+    "keyword_density": 0.0741,
+    "niche_relevance_score": 0.0566
+  }
+}

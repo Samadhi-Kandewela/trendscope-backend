@@ -162,7 +162,7 @@ def drop_empty_title_or_tags(df: pd.DataFrame) -> pd.DataFrame:
     df["title"] = df["title"].fillna("").astype(str)
     df["tags_text"] = df["tags_text"].fillna("").astype(str)
 
-    mask_valid = (df["title"].str.strip() != "") & (df["tags_text"].str.strip() != "")
+    mask_valid = df["title"].str.strip() != ""
     return df.loc[mask_valid].copy()
 
 

@@ -1,0 +1,10 @@
+# Ignore massive CSV datasets (too large for Git)
+filtered_2020_english.csv
+filtered_old_dataset_english.csv
+most_popular_filtered_preprossesing.csv
+live_data_export.csv
+
+# Ignore logs and python cache
+*.log
+__pycache__/
+.env

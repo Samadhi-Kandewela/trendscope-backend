@@ -51,6 +51,26 @@ def load_trend_topic_model() -> Optional[Dict[str, Any]]:
     return _trend_topic_model_cache
 
 
+def load_optimised_trend_model() -> Optional[Dict[str, Any]]:
+    """
+    Loads trend_topic_model_optimised.pkl if available (Elbow-validated K).
+    Falls back to trend_topic_model.pkl if optimised version not present.
+    """
+    optimised_path = MODELS_DIR / "trend_topic_model_optimised.pkl"
+    if not optimised_path.exists():
+        return None
+    try:
+        payload = joblib.load(optimised_path)
+        current_app.logger.info(
+            "Loaded OPTIMISED trend model (K=%s) from %s",
+            payload.get('k', '?'), optimised_path
+        )
+        return payload
+    except Exception as e:
+        current_app.logger.error("Failed to load optimised model: %s", e)
+        return None
+
+
 def calculate_clustering_metrics(X, labels) -> float:
     """
     Calculates the Silhouette Score for the given data and labels.
@@ -98,6 +118,65 @@ def load_advanced_trend_model() -> Optional[Dict[str, Any]]:
         return _advanced_model_cache
     except Exception as e:
         current_app.logger.error("Failed to load advanced model: %s", e)
+        return None
+
+
+# Phase 2B: SVD + K-Means (TF-IDF → 200-dim LSA → K-Means)
+_svd_trend_model_cache: Optional[Dict[str, Any]] = None
+
+def load_svd_trend_model() -> Optional[Dict[str, Any]]:
+    """
+    Loads trend_topic_model_svd.pkl (TF-IDF → SVD 200-dim → Normalizer → K-Means).
+    This is the fixed clustering model that solves the curse of dimensionality.
+    """
+    global _svd_trend_model_cache
+    if _svd_trend_model_cache is not None:
+        return _svd_trend_model_cache
+
+    model_path = MODELS_DIR / "trend_topic_model_svd.pkl"
+    if not model_path.exists():
+        return None
+
+    try:
+        _svd_trend_model_cache = joblib.load(model_path)
+        current_app.logger.info(
+            "Loaded SVD trend model (K=%s, dims=%s) from %s",
+            _svd_trend_model_cache.get('k', '?'),
+            _svd_trend_model_cache.get('n_components', '?'),
+            model_path,
+        )
+        return _svd_trend_model_cache
+    except Exception as e:
+        current_app.logger.error("Failed to load SVD model: %s", e)
+        return None
+
+
+# Phase 2C: LDA Topic Model
+_lda_model_cache: Optional[Dict[str, Any]] = None
+
+def load_lda_model() -> Optional[Dict[str, Any]]:
+    """
+    Loads trend_lda_model.pkl (CountVectorizer → LDA topic model).
+    LDA is purpose-built for text topic discovery — alternative to K-Means.
+    """
+    global _lda_model_cache
+    if _lda_model_cache is not None:
+        return _lda_model_cache
+
+    model_path = MODELS_DIR / "trend_lda_model.pkl"
+    if not model_path.exists():
+        return None
+
+    try:
+        _lda_model_cache = joblib.load(model_path)
+        current_app.logger.info(
+            "Loaded LDA model (topics=%s) from %s",
+            _lda_model_cache.get('k', '?'),
+            model_path,
+        )
+        return _lda_model_cache
+    except Exception as e:
+        current_app.logger.error("Failed to load LDA model: %s", e)
         return None
 
 
