@@ -1,38 +1,53 @@
-# TrendScope
+# TrendScope Backend
 
-This project consists of a Python backend that runs using Flask/FastAPI. Follow to the steps below to run it locally.
+TrendScope Backend is the API and machine learning engine for a YouTube trend prediction platform. It combines historical YouTube datasets with live YouTube Data API v3 data to generate trend predictions, topic clusters, sentiment insights and creator focused recommendations.
 
-### 1. Prerequisites
-- Python 3.9+ installed on your machine.
+## Features
+- YouTube trend data ingestion
+- NLP preprocessing and TF-IDF feature extraction
+- K-Means topic clustering
+- Random Forest based viral potential prediction
+- Sentiment analysis and LLM-based strategy generation
+- REST API endpoints for frontend integration
+- PostgreSQL database integration
 
-### 2. Set up the Backend
-First, navigate to the `backend` directory in your terminal:
-```bash
-cd backend
+## Tech Stack
+Python, Flask, PostgreSQL, SQLAlchemy, scikit-learn, Pandas, NumPy, TF-IDF, K-Means, Random Forest
+
+## Project Structure
+```text
+backend/
+├── app/
+│   ├── api/
+│   ├── ml/
+│   ├── models/
+│   ├── services/
+│   └── utils/
+├── docs/
+├── migrations/
+├── notebooks/
+├── scripts/
+├── .env.example
+├── requirements.txt
+└── run.py
 ```
 
-Create and activate a Python virtual environment:
+## Setup Instructions
 ```bash
-# Windows
+git clone https://github.com/Samadhi-Kandewela/trendscope-backend.git
+cd trendscope-backend/backend
 python -m venv venv
 venv\Scripts\activate
-
-# macOS/Linux
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-Install all the required Python packages:
-```bash
 pip install -r requirements.txt
+python run.py
 ```
 
-### 4. Configuration
-Ensure you have a `.env` file present in the `backend` directory containing the necessary environment variables (this file gets loaded automatically by `run.py`).
+## Environment Variables
 
-### 5. Run the Server
-Start the application using the `run.py` script:
-```bash
-python run.py
+Create a `.env` file using `.env.example`.
+
+```env
+DATABASE_URL=your_database_url
+YOUTUBE_API_KEY=your_youtube_api_key
+GROQ_API_KEY=your_groq_api_key
 ```
